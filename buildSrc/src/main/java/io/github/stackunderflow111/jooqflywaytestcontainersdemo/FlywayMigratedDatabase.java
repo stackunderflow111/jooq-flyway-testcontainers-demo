@@ -10,10 +10,6 @@ import org.gradle.api.services.BuildServiceParameters;
 import java.util.List;
 
 public abstract class FlywayMigratedDatabase implements BuildService<FlywayMigratedDatabase.Params> {
-    private final String jdbcUrl;
-    private final String username;
-    private final String password;
-
     public interface Params extends BuildServiceParameters {
         Property<String> getJdbcUrl();
         Property<String> getUsername();
@@ -22,27 +18,23 @@ public abstract class FlywayMigratedDatabase implements BuildService<FlywayMigra
     }
 
     public FlywayMigratedDatabase() {
-        Params params = getParameters();
-        jdbcUrl = params.getJdbcUrl().get();
-        username = params.getUsername().get();
-        password = params.getPassword().get();
-        List<String> migrationFileLocations = params.getMigrationFilesLocations().get();
+        List<String> migrationFileLocations = getParameters().getMigrationFilesLocations().get();
         FluentConfiguration fluentConfiguration = Flyway.configure()
-                .dataSource(jdbcUrl, username, password)
+                .dataSource(getJdbcUrl(), getUsername(), getPassword())
                 .locations(migrationFileLocations.toArray(new String[0]));
         Flyway flyway = fluentConfiguration.load();
         flyway.migrate();
     }
 
     public String getJdbcUrl() {
-        return jdbcUrl;
+        return getParameters().getJdbcUrl().get();
     }
 
     public String getUsername() {
-        return username;
+        return getParameters().getUsername().get();
     }
 
     public String getPassword() {
-        return password;
+        return getParameters().getPassword().get();
     }
 }
