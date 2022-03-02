@@ -5,7 +5,7 @@ import org.jooq.meta.jaxb.Configuration
 
 plugins {
     id("nu.studer.jooq") version "6.0.1"
-    id("io.github.stackunderflow111.testcontainers") version "2.1"
+    id("io.github.stackunderflow111.testcontainers") version "2.2"
 }
 
 buildscript {
@@ -13,7 +13,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        // provides the "org.testcontainers.containers.PostgreSQLContainer" class for my plugin
+        // provides the "org.testcontainers.containers.PostgreSQLContainer" class for the testcontainers plugin
         classpath("org.testcontainers:postgresql:1.16.3")
     }
 }
