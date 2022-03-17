@@ -1,11 +1,8 @@
-import io.github.stackunderflow111.jooqflywaytestcontainersdemo.FlywayMigratedDatabase
-import io.github.stackunderflow111.plugins.testcontainers.DatabaseContainer
 import nu.studer.gradle.jooq.JooqGenerate
 import org.jooq.meta.jaxb.Configuration
 
 plugins {
     id("nu.studer.jooq") version "6.0.1"
-    id("io.github.stackunderflow111.testcontainers") version "2.2"
 }
 
 buildscript {
@@ -59,22 +56,18 @@ jooq {
     }
 }
 
-val postgresDatabase = gradle.sharedServices.registerIfAbsent("postgresDatabase", DatabaseContainer::class) {
+val postgresDatabase = gradle.sharedServices.registerIfAbsent("jooqDatabase", io.github.stackunderflow111.jooqflywaytestcontainersdemo.database.buildservices.PostgresContainerDatabase::class) {
     parameters {
         // docker image name, required
         imageName.set("postgres:13-alpine")
-        // testcontainers class used to create the container, required
-        containerClass.set("org.testcontainers.containers.PostgreSQLContainer")
     }
 }
 
 val migrationFilesLocation = "src/main/resources/db/migration"
 
-val flywayMigratedDatabase = gradle.sharedServices.registerIfAbsent("flywayMigratedDatabase", FlywayMigratedDatabase::class) {
+val flywayMigratedDatabase = gradle.sharedServices.registerIfAbsent("flywayMigratedDatabase", io.github.stackunderflow111.jooqflywaytestcontainersdemo.flyway.buildservices.FlywayMigratedDatabase::class) {
     parameters {
-        jdbcUrl.set(postgresDatabase.map { it.jdbcUrl })
-        username.set(postgresDatabase.map { it.username })
-        password.set(postgresDatabase.map { it.password })
+        database.set(postgresDatabase)
         migrationFilesLocations.value(listOf("filesystem:$migrationFilesLocation"))
     }
 }

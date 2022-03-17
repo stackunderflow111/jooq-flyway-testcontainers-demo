@@ -1,5 +1,6 @@
-package io.github.stackunderflow111.jooqflywaytestcontainersdemo;
+package io.github.stackunderflow111.jooqflywaytestcontainersdemo.flyway.buildservices;
 
+import io.github.stackunderflow111.jooqflywaytestcontainersdemo.database.Database;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.configuration.FluentConfiguration;
 import org.gradle.api.provider.ListProperty;
@@ -11,9 +12,8 @@ import java.util.List;
 
 public abstract class FlywayMigratedDatabase implements BuildService<FlywayMigratedDatabase.Params> {
     public interface Params extends BuildServiceParameters {
-        Property<String> getJdbcUrl();
-        Property<String> getUsername();
-        Property<String> getPassword();
+        Property<Database<?>> getDatabase();
+
         ListProperty<String> getMigrationFilesLocations();
     }
 
@@ -27,14 +27,14 @@ public abstract class FlywayMigratedDatabase implements BuildService<FlywayMigra
     }
 
     public String getJdbcUrl() {
-        return getParameters().getJdbcUrl().get();
+        return getParameters().getDatabase().get().getJdbcUrl();
     }
 
     public String getUsername() {
-        return getParameters().getUsername().get();
+        return getParameters().getDatabase().get().getUsername();
     }
 
     public String getPassword() {
-        return getParameters().getPassword().get();
+        return getParameters().getDatabase().get().getPassword();
     }
 }
