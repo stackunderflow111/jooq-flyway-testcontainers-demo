@@ -1,8 +1,11 @@
+import io.github.stackunderflow111.jooqflywaytestcontainersdemo.database.Database
 import nu.studer.gradle.jooq.JooqGenerate
+import org.flywaydb.core.Flyway
 import org.jooq.meta.jaxb.Configuration
 
 plugins {
     id("nu.studer.jooq") version "6.0.1"
+    id("org.flywaydb.flyway") version "8.5.5"
 }
 
 buildscript {
@@ -12,6 +15,7 @@ buildscript {
     dependencies {
         // provides the "org.testcontainers.containers.PostgreSQLContainer" class for the testcontainers plugin
         classpath("org.testcontainers:postgresql:1.16.3")
+        classpath("org.postgresql:postgresql:42.3.3")
     }
 }
 
@@ -29,7 +33,7 @@ repositories {
 }
 
 dependencies {
-    jooqGenerator("org.postgresql:postgresql:42.3.3")
+    jooqGenerator("org.postgresql:postgresql:42.3.6")
 }
 
 tasks.withType<Test> {
@@ -63,9 +67,32 @@ val postgresDatabase = gradle.sharedServices.registerIfAbsent("jooqDatabase", io
     }
 }
 
+abstract class FlywayMigratedDatabase : BuildService<FlywayMigratedDatabase.Params> {
+    interface Params : BuildServiceParameters {
+        val database: Property<Database<*>>
+        val migrationFilesLocations: ListProperty<String>
+    }
+
+    init {
+        val migrationFileLocations = parameters.migrationFilesLocations.get()
+        val fluentConfiguration = Flyway.configure()
+            .dataSource(jdbcUrl, username, password)
+            .locations(*migrationFileLocations.toTypedArray())
+        val flyway = fluentConfiguration.load()
+        flyway.migrate()
+    }
+
+    val jdbcUrl: String
+        get() = parameters.database.get().jdbcUrl
+    val username: String
+        get() = parameters.database.get().username
+    val password: String
+        get() = parameters.database.get().password
+}
+
 val migrationFilesLocation = "src/main/resources/db/migration"
 
-val flywayMigratedDatabase = gradle.sharedServices.registerIfAbsent("flywayMigratedDatabase", io.github.stackunderflow111.jooqflywaytestcontainersdemo.flyway.buildservices.FlywayMigratedDatabase::class) {
+val flywayMigratedDatabase = gradle.sharedServices.registerIfAbsent("flywayMigratedDatabase", FlywayMigratedDatabase::class) {
     parameters {
         database.set(postgresDatabase)
         migrationFilesLocations.value(listOf("filesystem:$migrationFilesLocation"))
