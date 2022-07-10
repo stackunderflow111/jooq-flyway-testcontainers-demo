@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     `kotlin-dsl`
 }
@@ -5,6 +7,12 @@ plugins {
 java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(11))
+    }
+}
+
+tasks.withType<KotlinCompile> {
+    kotlinOptions {
+        jvmTarget = "11"
     }
 }
 

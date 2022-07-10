@@ -89,7 +89,7 @@ val databasePluginName = "io.github.stackunderflow111.jooqflywaytestcontainersde
 apply(plugin = databasePluginName)
 
 val postgresDatabase = gradle.sharedServices.registrations.getByName(
-    "jooqDatabase").service as Provider<Database<Database.Parameters>>
+    "database").service as Provider<Database<Database.Parameters>>
 
 val migrationFilesLocation = "src/main/resources/db/migration"
 

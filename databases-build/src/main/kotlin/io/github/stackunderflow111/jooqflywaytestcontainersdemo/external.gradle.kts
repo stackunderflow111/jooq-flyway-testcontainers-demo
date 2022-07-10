@@ -1,8 +1,5 @@
 package io.github.stackunderflow111.jooqflywaytestcontainersdemo
 
-import org.gradle.api.provider.Property
-import org.gradle.kotlin.dsl.registerIfAbsent
-
 abstract class ExternalDatabase : Database<ExternalDatabase.Parameters> {
   interface Parameters : Database.Parameters {
     val jdbcUrl: Property<String>
@@ -18,7 +15,7 @@ abstract class ExternalDatabase : Database<ExternalDatabase.Parameters> {
     get() = parameters.password.get()
 }
 
-gradle.sharedServices.registerIfAbsent("jooqDatabase", ExternalDatabase::class) {
+gradle.sharedServices.registerIfAbsent("database", ExternalDatabase::class) {
   parameters {
     jdbcUrl.set("jdbc:postgresql://localhost")
     username.set("postgres")

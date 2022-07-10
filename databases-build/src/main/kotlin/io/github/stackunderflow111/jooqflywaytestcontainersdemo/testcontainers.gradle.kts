@@ -12,8 +12,7 @@ abstract class PostgresContainerDatabase : Database<PostgresContainerDatabase.Pa
   private val container: PostgreSQLContainer<*>
 
   init {
-    val params = parameters
-    val imageName = params.imageName.get()
+    val imageName = parameters.imageName.get()
     container = PostgreSQLContainer<Nothing>(DockerImageName.parse(imageName))
     logger.info("Starting a container with image '{}'", imageName)
     container.start()
@@ -37,7 +36,7 @@ abstract class PostgresContainerDatabase : Database<PostgresContainerDatabase.Pa
   }
 }
 
-gradle.sharedServices.registerIfAbsent("jooqDatabase", PostgresContainerDatabase::class) {
+gradle.sharedServices.registerIfAbsent("database", PostgresContainerDatabase::class) {
   parameters {
     // docker image name, required
     imageName.set("postgres:13-alpine")
