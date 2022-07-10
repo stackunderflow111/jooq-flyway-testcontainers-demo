@@ -1,8 +1,7 @@
-import io.github.stackunderflow111.jooqflywaytestcontainersdemo.database.Database
 import nu.studer.gradle.jooq.JooqGenerate
 import org.flywaydb.core.Flyway
 import org.jooq.meta.jaxb.Configuration
-import io.github.stackunderflow111.jooqflywaytestcontainersdemo.database.buildservices.PostgresContainerDatabase
+import io.github.stackunderflow111.jooqflywaytestcontainersdemo.buildservices.Database
 
 plugins {
     id("nu.studer.jooq") version "6.0.1"
@@ -62,9 +61,6 @@ jooq {
     }
 }
 
-val postgresDatabase = gradle.sharedServices.registrations.getByName(
-    "jooqDatabase").service as Provider<Database<*>>
-
 abstract class FlywayMigratedDatabase : BuildService<FlywayMigratedDatabase.Params> {
     interface Params : BuildServiceParameters {
         val database: Property<Database<*>>
@@ -87,6 +83,9 @@ abstract class FlywayMigratedDatabase : BuildService<FlywayMigratedDatabase.Para
     val password: String
         get() = parameters.database.get().password
 }
+
+val postgresDatabase = gradle.sharedServices.registrations.getByName(
+    "jooqDatabase").service as Provider<Database<*>>
 
 val migrationFilesLocation = "src/main/resources/db/migration"
 

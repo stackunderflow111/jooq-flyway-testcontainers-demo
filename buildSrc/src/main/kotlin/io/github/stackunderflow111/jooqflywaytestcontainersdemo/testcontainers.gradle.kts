@@ -1,5 +1,5 @@
 package io.github.stackunderflow111.jooqflywaytestcontainersdemo
-import io.github.stackunderflow111.jooqflywaytestcontainersdemo.database.buildservices.PostgresContainerDatabase
+import io.github.stackunderflow111.jooqflywaytestcontainersdemo.buildservices.PostgresContainerDatabase
 
 gradle.sharedServices.registerIfAbsent("jooqDatabase", PostgresContainerDatabase::class) {
   parameters {
