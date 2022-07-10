@@ -1,4 +1,4 @@
-package io.github.stackunderflow111.jooqflywaytestcontainersdemo.buildservices
+package io.github.stackunderflow111.jooqflywaytestcontainersdemo
 
 import org.gradle.api.services.BuildService
 import org.gradle.api.services.BuildServiceParameters

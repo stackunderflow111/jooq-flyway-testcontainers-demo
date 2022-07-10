@@ -1,12 +1,13 @@
 import nu.studer.gradle.jooq.JooqGenerate
 import org.flywaydb.core.Flyway
 import org.jooq.meta.jaxb.Configuration
-import io.github.stackunderflow111.jooqflywaytestcontainersdemo.buildservices.Database
+import io.github.stackunderflow111.jooqflywaytestcontainersdemo.Database
 
 plugins {
     id("nu.studer.jooq") version "6.0.1"
     id("org.flywaydb.flyway") version "8.5.5"
-    id("io.github.stackunderflow111.jooqflywaytestcontainersdemo.testcontainers")
+    id("io.github.stackunderflow111.jooqflywaytestcontainersdemo.testcontainers") apply false
+    id("io.github.stackunderflow111.jooqflywaytestcontainersdemo.external") apply false
 }
 
 buildscript {
@@ -14,8 +15,6 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        // provides the "org.testcontainers.containers.PostgreSQLContainer" class for the testcontainers plugin
-        classpath("org.testcontainers:postgresql:1.16.3")
         classpath("org.postgresql:postgresql:42.3.3")
     }
 }
@@ -83,6 +82,11 @@ abstract class FlywayMigratedDatabase : BuildService<FlywayMigratedDatabase.Para
     val password: String
         get() = parameters.database.get().password
 }
+
+val jooqProfile: String by project
+val databasePluginName = "io.github.stackunderflow111.jooqflywaytestcontainersdemo.$jooqProfile"
+
+apply(plugin = databasePluginName)
 
 val postgresDatabase = gradle.sharedServices.registrations.getByName(
     "jooqDatabase").service as Provider<Database<*>>
