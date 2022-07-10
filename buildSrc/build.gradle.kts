@@ -1,5 +1,5 @@
 plugins {
-    java
+    `kotlin-dsl`
 }
 
 java {
@@ -13,6 +13,5 @@ repositories {
 }
 
 dependencies {
-    api(gradleApi())
     implementation("org.testcontainers:postgresql:1.16.3")
 }
