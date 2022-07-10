@@ -4,9 +4,8 @@ import org.slf4j.LoggerFactory
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.utility.DockerImageName
 
-abstract class PostgresContainerDatabase : Database<PostgresContainerDatabase.Params>, AutoCloseable {
-  interface Params : BuildServiceParameters {
-
+abstract class PostgresContainerDatabase : Database<PostgresContainerDatabase.Parameters>, AutoCloseable {
+  interface Parameters : Database.Parameters {
     val imageName: Property<String>
   }
 

@@ -62,7 +62,7 @@ jooq {
 
 abstract class FlywayMigratedDatabase : BuildService<FlywayMigratedDatabase.Params> {
     interface Params : BuildServiceParameters {
-        val database: Property<Database<*>>
+        val database: Property<Database<Database.Parameters>>
         val migrationFilesLocations: ListProperty<String>
     }
 
@@ -89,7 +89,7 @@ val databasePluginName = "io.github.stackunderflow111.jooqflywaytestcontainersde
 apply(plugin = databasePluginName)
 
 val postgresDatabase = gradle.sharedServices.registrations.getByName(
-    "jooqDatabase").service as Provider<Database<*>>
+    "jooqDatabase").service as Provider<Database<Database.Parameters>>
 
 val migrationFilesLocation = "src/main/resources/db/migration"
 
